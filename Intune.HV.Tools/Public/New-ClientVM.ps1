@@ -26,7 +26,7 @@ function New-ClientVM {
             Mandatory = $true
         )]
         [ValidateRange(2gb, 20gb)]
-        [string]$VMMemory
+        [int64]$VMMemory
     )
 
     #region Config
@@ -41,11 +41,11 @@ function New-ClientVM {
     $script:logfile = "$clientPath\Build.log"
 
     Write-LogEntry -Type Information -Message "Path to AutoPilot Reference VHDX is: $($imageDetails.refImagePath)"
-    Write-LogEntry -Type Information -Message "Client name is: $client"
+    Write-LogEntry -Type Information -Message "Client name is: $Client"
     Write-LogEntry -Type Information -Message "Win10 ISO is located: $($imageDetails.imagePath)"
     Write-LogEntry -Type Information -Message "Path to client VMs will be: $clientPath"
     Write-LogEntry -Type Information -Message "Number of VMs to create: $NumberOfVMs"
-    Write-LogEntry -type Information -Message "Admin user for tenant: $clientName is: $($clientDetails.adminUpn)"
+    Write-LogEntry -type Information -Message "Admin user for tenant: $Client is: $($clientDetails.adminUpn)"
     #endregion
 
     #region Check for ref image - if it's not there, build it
@@ -56,7 +56,7 @@ function New-ClientVM {
     }
     #endregion
     #region Get Autopilot policy
-    Get-AutopilotPolicy -FileDestination "$clientPath\AutopilotConfigurationFile.json"
+    Get-AutopilotPolicy -FileDestination "$clientPath"
     #endregion
     #region Build the client VMs
     $apOut = @()
@@ -74,20 +74,19 @@ function New-ClientVM {
         $vmParams.VLanId = $script:hvConfig.vLanId
     }
     if ($numberOfVMs -eq 1) {
-        $vmParams.VMName = "$($clientName)_$numberOfVMs"
+        $max = ((Get-VM -Name "$Client*").name -replace "$client`_" | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
+        $vmParams.VMName = "$($Client)_$max"
         $vm = New-ClientDevice @vmParams
-        $vm | Out-File -FilePath "$clientPath\ap$numberOfVMs.csv"
+        $vm | Out-File -FilePath "$clientPath\ap$max.csv"
         $apOut += $vm
     }
     else {
-        $vNum = 1
-        $existingVMs = (Get-VM -Name "$($clientName)*").name -replace "$($clientName)"
-        while ($vNum -ne ($NumberOfVMs + 1 + $existingVMs.Count)) {
-            if (!($vNum -in $existingVMs)) {
-                $vmParams.VMName = "$($clientName)_$vNum"
-                $apOut += New-ClientDevice @vmParams
-            }
-            $vNum++
+        (1..$NumberOfVMs) | ForEach-Object {
+            $max = ((Get-VM -Name "$Client*").name -replace "$client`_" | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
+            $vmParams.VMName = "$($Client)_$max"
+            $vm = New-ClientDevice @vmParams
+            $vm | Out-File -FilePath "$clientPath\ap$max.csv"
+            $apOut += $vm
         }
     }
     #endregion
