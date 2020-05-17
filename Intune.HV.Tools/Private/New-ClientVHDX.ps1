@@ -11,18 +11,30 @@ function New-ClientVHDX {
         [switch]$unattend
 
     )
-    $module = Get-Module -ListAvailable -Name 'Convert-WindowsImage'
-    if ($module.count -ne 1) {
-        Install-Module -name 'Convert-WindowsImage'
+    try {
+        $module = Get-Module -ListAvailable -Name 'Hyper-ConvertImage'
+        if ($module.count -lt 1) {
+            Install-Module -name 'Hyper-ConvertImage'
+        }
+        if ($PSVersionTable.PSVersion.Major -eq 7) {
+            Import-Module -name 'Hyper-ConvertImage' -UseWindowsPowerShell -ErrorAction SilentlyContinue 3>$null
+        }
+        else {
+            Import-Module -name 'Hyper-ConvertImage'
+        }
+        if ($unattend) {
+            Convert-WindowsImage -SourcePath $winIso -Edition 3 -VhdType Dynamic -VhdFormat VHDX -VhdPath $vhdxPath -DiskLayout UEFI -SizeBytes 127gb -UnattendPath $unattend
+        }
+        else {
+            Convert-WindowsImage -SourcePath $winIso -Edition 3 -VhdType Dynamic -VhdFormat VHDX -VhdPath $vhdxPath -DiskLayout UEFI -SizeBytes 127gb
+        }
     }
-    else {
-        Update-Module -Name 'Convert-WindowsImage'
+    catch {
+        Write-Warning = $_
     }
-    Import-Module -name 'Convert-Windowsimage'
-    if ($unattend) {
-        Convert-WindowsImage -SourcePath $winIso -Edition 3 -VhdType Dynamic -VhdFormat VHDX -VhdPath $vhdxPath -DiskLayout UEFI -SizeBytes 127gb -UnattendPath $unattend
-    }
-    else {
-        Convert-WindowsImage -SourcePath $winIso -Edition 3 -VhdType Dynamic -VhdFormat VHDX -VhdPath $vhdxPath -DiskLayout UEFI -SizeBytes 127gb
+    finally {
+        if (PSVersionTable.PSVersion.Major -eq 7) {
+            Remove-Module -Name 'Hyper-ConvertImage' -Force
+        }
     }
 }
