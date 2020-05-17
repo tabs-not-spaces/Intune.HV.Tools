@@ -10,15 +10,14 @@ param (
     [switch]$buildLocal
 )
 if ($buildLocal) {
+    [int32]$env:BUILD_BUILDID = 420
     if (Test-Path $PSScriptRoot\localenv.ps1 -ErrorAction SilentlyContinue) {
         . $PSScriptRoot\localenv.ps1
-        if (Test-Path "$PSScriptRoot\bin\release\*") {
-            [int32]$env:BUILD_BUILDID = ((Get-ChildItem $PSScriptRoot\bin\release\).Name | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
-        }
-        else {
-            [int32]$env:BUILD_BUILDID = 420
-        }
     }
+    if (Test-Path "$PSScriptRoot\bin\release\*") {
+        [int32]$env:BUILD_BUILDID = ((Get-ChildItem $PSScriptRoot\bin\release\).Name | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
+    }
+
 }
 try {
     if (!($moduleName)) {
@@ -41,11 +40,11 @@ try {
     #region Generate a list of public functions and update the module manifest
     $functions = @(Get-ChildItem -Path $relPath\Public\*.ps1 -ErrorAction SilentlyContinue).basename
     $params = @{
-        Path = "$relPath\$ModuleName.psd1"
-        ModuleVersion = $newVersion
-        Description = (Get-Content $relPath\description.txt -raw).ToString()
+        Path              = "$relPath\$ModuleName.psd1"
+        ModuleVersion     = $newVersion
+        Description       = (Get-Content $relPath\description.txt -raw).ToString()
         FunctionsToExport = $functions
-        ReleaseNotes = (Get-Content $relPath\releaseNotes.txt -raw).ToString()
+        ReleaseNotes      = (Get-Content $relPath\releaseNotes.txt -raw).ToString()
     }
     Update-ModuleManifest @params
     $moduleManifest = Get-Content $relPath\$ModuleName.psd1 -raw | Invoke-Expression
