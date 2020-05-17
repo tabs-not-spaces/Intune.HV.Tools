@@ -3,7 +3,7 @@ param (
     [parameter(Mandatory = $true)]
     [System.IO.FileInfo]$modulePath,
 
-    [parameter(Mandatory = $true)]
+    [parameter(Mandatory = $false)]
     [string]$moduleName,
 
     [parameter(Mandatory = $false)]
@@ -13,11 +13,17 @@ if ($buildLocal) {
     if (Test-Path $PSScriptRoot\localenv.ps1 -ErrorAction SilentlyContinue) {
         . $PSScriptRoot\localenv.ps1
         if (Test-Path "$PSScriptRoot\bin\release\*") {
-            $env:BUILD_BUILDID = ((Get-ChildItem $PSScriptRoot\bin\release\).Name | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
+            [int32]$env:BUILD_BUILDID = ((Get-ChildItem $PSScriptRoot\bin\release\).Name | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
+        }
+        else {
+            [int32]$env:BUILD_BUILDID = 420
         }
     }
 }
 try {
+    if (!($moduleName)) {
+        $moduleName = Split-Path $modulePath -Leaf
+    }
     #region Generate a new version number
     $newVersion = New-Object version -ArgumentList 1, 0, 0, $env:BUILD_BUILDID
     #endregion
