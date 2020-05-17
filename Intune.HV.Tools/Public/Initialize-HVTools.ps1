@@ -2,7 +2,10 @@ function Initialize-HVTools {
     [cmdletbinding()]
     param (
         [parameter(Mandatory = $false)]
-        $Path = "$env:USERPROFILE"
+        $Path = "$env:USERPROFILE",
+
+        [parameter(Mandatory = $false)]
+        [switch]$Reset
     )
     try {
         $script:tick = [char]0x221a
@@ -20,7 +23,7 @@ function Initialize-HVTools {
         }
         $cfgPath = "$Path\.hvtools\hvconfig.json"
         Write-Host " + Creating $cfgPath.. " -ForegroundColor Cyan -NoNewline
-        if (Test-Path $cfgPath -ErrorAction SilentlyContinue) {
+        if ((Test-Path $cfgPath -ErrorAction SilentlyContinue) -and ($Reset -eq $false)) {
             Write-Host "$script:tick (Already created - no need to run this again..)" -ForegroundColor Green
         }
         else {
@@ -35,7 +38,7 @@ function Initialize-HVTools {
             $initCfg | Out-File $cfgPath -Encoding ascii -Force
             $cfgPath | Out-File "$env:USERPROFILE\.hvtoolscfgpath" -Encoding ascii -Force
             Write-Host $script:tick -ForegroundColor Green
-            $script:hvConfig = (get-content -Path "$(get-content "$env:USERPROFILE\.hvtoolscfgpath" -ErrorAction SilentlyContinue)" -raw -ErrorAction SilentlyContinue | ConvertFrom-Json -Depth 20)
+            $script:hvConfig = (get-content -Path "$(get-content "$env:USERPROFILE\.hvtoolscfgpath" -ErrorAction SilentlyContinue)" -raw -ErrorAction SilentlyContinue | ConvertFrom-Json)
         }
     }
     catch {
