@@ -16,8 +16,6 @@ function Add-ImageToConfig {
         }
         $script:hvConfig.images += $newTenant
         $script:hvConfig | ConvertTo-Json -Depth 20 | Out-File -FilePath $hvConfig.hvConfigPath -Encoding ascii -Force
-        $expandPath = "$(Split-Path $newTenant.imagePath -Parent)\$(Split-Path $newTenant.imagePath -LeafBase)"
-        ##TODO: expand the iso so we can use it to create the reference image.
     }
     catch {
         $errorMsg = $_
