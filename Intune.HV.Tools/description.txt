@@ -1,1 +1,1 @@
-initial commit
+Set of tools to work with Hyper-V and Autopilot / Intune.

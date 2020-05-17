@@ -33,7 +33,7 @@ function New-ClientVHDX {
         Write-Warning = $_
     }
     finally {
-        if (PSVersionTable.PSVersion.Major -eq 7) {
+        if ($PSVersionTable.PSVersion.Major -eq 7) {
             Remove-Module -Name 'Hyper-ConvertImage' -Force
         }
     }
