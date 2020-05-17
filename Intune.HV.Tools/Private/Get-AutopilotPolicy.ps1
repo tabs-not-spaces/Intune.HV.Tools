@@ -7,11 +7,19 @@ function Get-AutopilotPolicy {
         [System.IO.FileInfo]$FileDestination
     )
     try {
-        @(
+        $modules = @(
             "WindowsAutoPilotIntune",
             "Microsoft.Graph.Intune"
-        ) | ForEach-Object {
-            Import-Module $_ -UseWindowsPowerShell -ErrorAction SilentlyContinue 3>$null
+        )
+        if ($PSVersionTable.PSVersion.Major -eq 7) {
+            $modules | ForEach-Object {
+                Import-Module $_ -UseWindowsPowerShell -ErrorAction SilentlyContinue 3>$null
+            }
+        }
+        else {
+            $modules | ForEach-Object {
+                Import-Module $_
+            }
         }
         #region Connect to Intune
         Connect-MSGraph | Out-Null
@@ -24,18 +32,31 @@ function Get-AutopilotPolicy {
         else {
             if ($apPolicies.count -gt 1) {
                 Write-Host "Multiple Autopilot policies found - select the correct one.." -ForegroundColor Cyan
-                $apPol = $apPolicies | select-object displayName | Out-ConsoleGridView -passthru
+                $apPol = $apPolicies | Select-Object displayName | Out-GridView -passthru
             }
             else {
                 Write-Host "Policy found - saving to $FileDestination.." -ForegroundColor Cyan
                 $apPol = $apPolicies
             }
-            $apPol | ConvertTo-AutoPilotConfigurationJSON | Out-File "$FileDestination\AutopilotConfigurationFile.json" -Encoding ascii -Force
+            $apPol | ConvertTo-AutopilotConfigurationJSON | Out-File "$FileDestination\AutopilotConfigurationFile.json" -Encoding ascii -Force
             Write-Host "`nSelected: $($apPol.displayName)" -ForegroundColor Green
         }
         #endregion Get policies
     }
     catch {
-        Write-Warning $_
+        $errorMsg = $_
+    }
+    finally {
+        if ($PSVersionTable.PSVersion.Major -eq 7) {
+            $modules = @(
+                "WindowsAutoPilotIntune",
+                "Microsoft.Graph.Intune"
+            ) | ForEach-Object {
+                Remove-Module $_ -ErrorAction SilentlyContinue 3>$null
+            }
+        }
+        if ($errrorMsg) {
+            Write-Warning $errorMsg
+        }
     }
 }

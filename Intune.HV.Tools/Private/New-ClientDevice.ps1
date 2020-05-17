@@ -44,7 +44,7 @@ function New-ClientDevice {
         [string]$VMMMemory
     )
     Copy-Item -path $RefVHDX -Destination "$ClientPath\$VMName.vhdx"
-    Publish-APCfg -vmName $VMName -clientPath $ClientPath
+    Publish-AutoPilotConfig -vmName $VMName -clientPath $ClientPath
     New-VM -Name $VMName -MemoryStartupBytes $VMMMemory -VHDPath "$ClientPath\$VMName.vhdx" -Generation 2 | Out-Null
     Enable-VMIntegrationService -vmName $VMName -Name "Guest Service Interface"
     Set-VM -name $VMName -CheckpointType Disabled
