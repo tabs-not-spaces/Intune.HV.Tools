@@ -1,3 +1,4 @@
+#requires -Modules "Hyper-ConvertImage"
 function New-ClientVHDX {
     [cmdletbinding(SupportsShouldProcess)]
     param

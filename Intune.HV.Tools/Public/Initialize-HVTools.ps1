@@ -1,8 +1,8 @@
 function Initialize-HVTools {
     [cmdletbinding()]
     param (
-        [parameter(Position = 1, Mandatory = $false)]
-        $Path = "$env:USERPROFILE",
+        [parameter(Position = 1, Mandatory = $true)]
+        [System.IO.FileInfo]$Path,
 
         [parameter(Position = 2, Mandatory = $false)]
         [switch]$Reset

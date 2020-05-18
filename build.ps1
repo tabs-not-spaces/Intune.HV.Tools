@@ -44,7 +44,7 @@ try {
         ModuleVersion     = $newVersion
         Description       = (Get-Content $relPath\description.txt -raw).ToString()
         FunctionsToExport = $functions
-        ReleaseNotes      = (Get-Content $relPath\releaseNotes.txt -raw).ToString()
+        ReleaseNotes      = (Get-Content $relPath\releaseNotes.txt -raw).Replace('***',$newVersion).ToString()
     }
     Update-ModuleManifest @params
     $moduleManifest = Get-Content $relPath\$ModuleName.psd1 -raw | Invoke-Expression

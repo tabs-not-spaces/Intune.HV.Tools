@@ -1,1 +1,1 @@
-* First release - enjoy!
+*** - Initialize-HVTools parameter Path now required.
