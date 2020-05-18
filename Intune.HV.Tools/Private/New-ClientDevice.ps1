@@ -1,50 +1,34 @@
 function New-ClientDevice {
     [cmdletBinding()]
     param (
-        [parameter(
-            Position = 1,
-            Mandatory = $true
-        )]
+        [parameter(Position = 1, Mandatory = $true)]
         [string]$VMName,
 
-        [parameter(
-            Position = 2,
-            Mandatory = $true
-        )]
+        [parameter(Position = 2, Mandatory = $true)]
         [string]$ClientPath,
 
-        [parameter(
-            Position = 3,
-            Mandatory = $true
-        )]
+        [parameter(Position = 3, Mandatory = $true)]
         [string]$RefVHDX,
 
-        [parameter(
-            Position = 4,
-            Mandatory = $true
-        )]
+        [parameter(Position = 4, Mandatory = $true)]
         [string]$VSwitchName,
 
-        [parameter(
-            Position = 5,
-            Mandatory = $false
-        )]
+        [parameter(Position = 5, Mandatory = $false)]
         [string]$VLanId,
 
-        [parameter(
-            Position = 6,
-            Mandatory = $true
-        )]
+        [parameter(Position = 6, Mandatory = $true)]
         [string]$CPUCount,
 
-        [parameter(
-            Position = 7,
-            Mandatory = $true
-        )]
-        [string]$VMMMemory
+        [parameter(Position = 7, Mandatory = $true)]
+        [string]$VMMMemory,
+
+        [parameter(Position = 8, Mandatory = $false)]
+        [switch]$skipAutoPilot
     )
     Copy-Item -path $RefVHDX -Destination "$ClientPath\$VMName.vhdx"
-    Publish-AutoPilotConfig -vmName $VMName -clientPath $ClientPath
+    if (!($skipAutoPilot)) {
+        Publish-AutoPilotConfig -vmName $VMName -clientPath $ClientPath
+    }
     New-VM -Name $VMName -MemoryStartupBytes $VMMMemory -VHDPath "$ClientPath\$VMName.vhdx" -Generation 2 | Out-Null
     Enable-VMIntegrationService -vmName $VMName -Name "Guest Service Interface"
     Set-VM -name $VMName -CheckpointType Disabled
