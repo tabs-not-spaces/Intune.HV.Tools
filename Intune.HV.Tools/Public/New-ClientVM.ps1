@@ -23,7 +23,7 @@ function New-ClientVM {
 
     #region Config
     $clientDetails = $script:hvConfig.tenantConfig | Where-Object { $_.TenantName -eq $TenantName }
-    $imageDetails = $script:hvConfig.images | Where-Object { $_.imageName -eq $clientDetails.Win10Ver }
+    $imageDetails = $script:hvConfig.images | Where-Object { $_.imageName -eq $clientDetails.imageName }
     $clientPath = "$($script:hvConfig.vmPath)\$($TenantName)"
     if (!(Test-Path $clientPath)) {
         New-Item -ItemType Directory -Force -Path $clientPath | Out-Null
