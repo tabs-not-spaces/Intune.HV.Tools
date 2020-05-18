@@ -1,1 +1,1 @@
-*** - updating parameter values to be standardized
+*** - Improving cmdlet autocomplete

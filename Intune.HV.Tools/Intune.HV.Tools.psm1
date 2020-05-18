@@ -62,7 +62,7 @@ $vLan = {
         )
     }
 }
-Register-ArgumentCompleter -CommandName Add-VLanToConfig -ParameterName VSwitchName -ScriptBlock $vLan
+Register-ArgumentCompleter -CommandName Add-NetworkToConfig -ParameterName VSwitchName -ScriptBlock $vLan
 
 $win10Builds = {
     param (
