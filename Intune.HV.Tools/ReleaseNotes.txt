@@ -1,1 +1,1 @@
-*** - Initialize-HVTools parameter Path now required.
+*** - Fixing module dependency for pwsh7 support

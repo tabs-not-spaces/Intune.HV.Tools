@@ -17,9 +17,10 @@ function New-ClientVHDX {
         $module = Get-Module -ListAvailable -Name 'Hyper-ConvertImage'
         if ($module.count -lt 1) {
             Install-Module -name 'Hyper-ConvertImage'
+            $module = Get-Module -ListAvailable -Name 'Hyper-ConvertImage'
         }
         if ($PSVersionTable.PSVersion.Major -eq 7) {
-            Import-Module -name 'Hyper-ConvertImage' -UseWindowsPowerShell -ErrorAction SilentlyContinue 3>$null
+            Import-Module -name (Split-Path $module.ModuleBase -Parent) -UseWindowsPowerShell -ErrorAction SilentlyContinue 3>$null
         }
         else {
             Import-Module -name 'Hyper-ConvertImage'
