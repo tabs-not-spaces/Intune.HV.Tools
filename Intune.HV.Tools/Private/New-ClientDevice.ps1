@@ -59,4 +59,7 @@ function New-ClientDevice {
     Set-VMKeyProtector -VMName $VMName -KeyProtector $kp.RawData
     Enable-VMTPM -VMName $VMName
     Start-VM -Name $VMName
+    #Set VM Info with Serial number
+    $vmSerial = (Get-CimInstance -Namespace root\virtualization\v2 -class Msvm_VirtualSystemSettingData | Where-Object { ($_.VirtualSystemType -eq "Microsoft:Hyper-V:System:Realized") -and ($_.elementname -eq $VMName )}).BIOSSerialNumber
+    Get-VM -Name $VMname | Set-VM -Notes "Serial# $vmSerial"
 }
