@@ -1,0 +1,50 @@
+pr:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - /Intune.HV.Tools
+    exclude:
+      - /.gitignore
+      - /readme.md
+      - /.tests
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        pool:
+          vmImage: 'vs2017-win2016'
+        steps:
+          - task: PowerShell@2
+            displayName: Pre-Build
+            inputs:
+              targetType: 'inline'
+              script: |
+                Install-Module -Name Pester -Verbose -Scope CurrentUser -SkipPublisherCheck -Force
+                Install-Module WindowsAutoPilotIntune -Scope CurrentUser -Force
+                Install-Module Microsoft.Graph.Intune -Scope CurrentUser -Force
+              pwsh: true
+
+          - task: PowerShell@2
+            displayName: BuildForTest
+            inputs:
+              filePath: './build.ps1'
+              arguments: '-modulePath $(modulePath) -moduleName $(moduleName)'
+              pwsh: true
+
+          - task: PowerShell@2
+            displayName: 'Code Quality Test'
+            inputs:
+              filePath: './tests/codecheck.ps1'
+              pwsh: true
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Test Results'
+            inputs:
+              testResultsFormat: 'NUnit'
+              testResultsFiles: 'pester.codecheck.test.xml'
+              searchFolder: '$(System.DefaultWorkingDirectory)/.tests'
+              failTaskOnFailedTests: true
+              testRunTitle: 'Code Quality Test'
