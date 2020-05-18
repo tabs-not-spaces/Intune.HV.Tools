@@ -1,1 +1,1 @@
-Set of tools to work with Hyper-V and Autopilot / Intune.
+Rapidly build VMs in Hyper-V with Intune.HV.Tools.

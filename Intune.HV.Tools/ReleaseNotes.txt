@@ -1,1 +1,1 @@
-* initial commit. Very exciting!
+* First release - enjoy!
