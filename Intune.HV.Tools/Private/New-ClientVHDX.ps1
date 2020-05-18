@@ -1,13 +1,13 @@
 function New-ClientVHDX {
     param
     (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Position = 1, Mandatory = $true)]
         [string]$vhdxPath,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Position = 2, Mandatory = $true)]
         [string]$winIso,
 
-        [Parameter(Mandatory = $false)]
+        [Parameter(Position = 3, Mandatory = $false)]
         [switch]$unattend
 
     )

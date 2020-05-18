@@ -1,12 +1,11 @@
 function Add-ImageToConfig {
     [cmdletbinding()]
     param (
-        [parameter(Mandatory = $true)]
+        [parameter(Position = 1, Mandatory = $true)]
         $ImageName,
-        [parameter(Mandatory = $true)]
+        [parameter(Position = 2, Mandatory = $true)]
         $IsoPath
     )
-    $script:tick = [char]0x221a
     try {
         Write-Host "Adding $ImageName to config.. " -ForegroundColor Cyan -NoNewline
         $newTenant = [pscustomobject]@{

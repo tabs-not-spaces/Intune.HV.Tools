@@ -1,14 +1,13 @@
 function Initialize-HVTools {
     [cmdletbinding()]
     param (
-        [parameter(Mandatory = $false)]
+        [parameter(Position = 1, Mandatory = $false)]
         $Path = "$env:USERPROFILE",
 
-        [parameter(Mandatory = $false)]
+        [parameter(Position = 2, Mandatory = $false)]
         [switch]$Reset
     )
     try {
-        $script:tick = [char]0x221a
         $paths = @(
             "$Path\.hvtools",
             "$Path\.hvtools\tenantVMs"
