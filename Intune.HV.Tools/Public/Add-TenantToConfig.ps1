@@ -5,7 +5,7 @@ function Add-TenantToConfig {
         $TenantName,
 
         [parameter(Position = 2, Mandatory = $true)]
-        $Win10Ver,
+        $ImageName,
 
         [parameter(Position = 3, Mandatory = $true)]
         $AdminUpn
@@ -14,7 +14,7 @@ function Add-TenantToConfig {
         Write-Host "Adding $TenantName to config.. " -ForegroundColor Cyan -NoNewline
         $newTenant = [pscustomobject]@{
             TenantName = $TenantName
-            Win10Ver   = $Win10Ver
+            ImageName   = $ImageName
             AdminUpn   = $AdminUpn
         }
         $script:hvConfig.tenantConfig += $newTenant

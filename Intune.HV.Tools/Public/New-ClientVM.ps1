@@ -3,7 +3,7 @@ function New-ClientVM {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         [parameter(Position = 1, Mandatory = $true)]
-        [string]$Client,
+        [string]$TenantName,
 
         [parameter(Position = 2, Mandatory = $true)]
         [ValidateRange(1, 999)]
@@ -22,19 +22,19 @@ function New-ClientVM {
     )
 
     #region Config
-    $clientDetails = $script:hvConfig.tenantConfig | Where-Object { $_.TenantName -eq $Client }
+    $clientDetails = $script:hvConfig.tenantConfig | Where-Object { $_.TenantName -eq $TenantName }
     $imageDetails = $script:hvConfig.images | Where-Object { $_.imageName -eq $clientDetails.Win10Ver }
-    $clientPath = "$($script:hvConfig.vmPath)\$($Client)"
+    $clientPath = "$($script:hvConfig.vmPath)\$($TenantName)"
     if (!(Test-Path $clientPath)) {
         New-Item -ItemType Directory -Force -Path $clientPath | Out-Null
     }
 
     Write-Verbose "Autopilot Reference VHDX: $($imageDetails.refImagePath)"
-    Write-Verbose "Client name: $Client"
+    Write-Verbose "Client name: $TenantName"
     Write-Verbose "Win10 ISO is located:  $($imageDetails.imagePath)"
     Write-Verbose "Path to client VMs will be: $clientPath"
     Write-Verbose "Number of VMs to create:  $NumberOfVMs"
-    Write-Verbose "Admin user for $Client is:  $($clientDetails.adminUpn)`n"
+    Write-Verbose "Admin user for $TenantName is:  $($clientDetails.adminUpn)`n"
     #endregion
 
     #region Check for ref image - if it's not there, build it
@@ -67,17 +67,16 @@ function New-ClientVM {
     if ($script:hvConfig.vLanId) {
         $vmParams.VLanId = $script:hvConfig.vLanId
     }
-    Get-VM -Name "$Client*" | Out-Null
     if ($numberOfVMs -eq 1) {
-        $max = ((Get-VM -Name "$Client*").name -replace "$client`_" | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
-        $vmParams.VMName = "$($Client)_$max"
+        $max = ((Get-VM -Name "$TenantName*").name -replace "$TenantName`_" | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
+        $vmParams.VMName = "$($TenantName)_$max"
         Write-Host "Creating VM: $($vmParams.VMName).." -ForegroundColor Yellow
         New-ClientDevice @vmParams
     }
     else {
         (1..$NumberOfVMs) | ForEach-Object {
-            $max = ((Get-VM -Name "$Client*").name -replace "$client`_" | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
-            $vmParams.VMName = "$($Client)_$max"
+            $max = ((Get-VM -Name "$TenantName*").name -replace "$TenantName`_" | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
+            $vmParams.VMName = "$($TenantName)_$max"
             Write-Host "Creating VM: $($vmParams.VMName).." -ForegroundColor Yellow
             New-ClientDevice @vmParams
         }

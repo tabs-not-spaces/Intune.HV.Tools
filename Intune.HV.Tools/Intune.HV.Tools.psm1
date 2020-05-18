@@ -23,7 +23,7 @@ foreach ($import in @($Public + $Private)) {
     }
 }
 
-$clientFinder = {
+$tenantFinder = {
     param(
         $commandName,
         $parameterName,
@@ -42,7 +42,7 @@ $clientFinder = {
         }
     }
 }
-Register-ArgumentCompleter -CommandName New-ClientVM -ParameterName client -ScriptBlock $clientFinder
+Register-ArgumentCompleter -CommandName New-ClientVM -ParameterName TenantName -ScriptBlock $tenantFinder
 
 $vLan = {
     param (
@@ -82,5 +82,5 @@ $win10Builds = {
         )
     }
 }
-Register-ArgumentCompleter -CommandName Add-TenantToConfig -ParameterName Win10Ver -ScriptBlock $win10Builds
+Register-ArgumentCompleter -CommandName Add-TenantToConfig -ParameterName ImageName -ScriptBlock $win10Builds
 #endregion

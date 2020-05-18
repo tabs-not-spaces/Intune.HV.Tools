@@ -1,1 +1,1 @@
-*** - Updating cmdlet names for better use
+*** - updating parameter values to be standardized
