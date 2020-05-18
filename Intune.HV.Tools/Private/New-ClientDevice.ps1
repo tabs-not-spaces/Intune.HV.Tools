@@ -1,5 +1,5 @@
 function New-ClientDevice {
-    [cmdletBinding()]
+    [cmdletBinding(SupportsShouldProcess)]
     param (
         [parameter(Position = 1, Mandatory = $true)]
         [string]$VMName,

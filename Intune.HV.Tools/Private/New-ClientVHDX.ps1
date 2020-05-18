@@ -1,4 +1,5 @@
 function New-ClientVHDX {
+    [cmdletbinding(SupportsShouldProcess)]
     param
     (
         [Parameter(Position = 1, Mandatory = $true)]

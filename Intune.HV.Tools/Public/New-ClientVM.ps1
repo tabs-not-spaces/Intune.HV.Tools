@@ -1,6 +1,6 @@
 #requires -Modules "Hyper-V"
 function New-ClientVM {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         [parameter(Position = 1, Mandatory = $true)]
         [string]$Client,
