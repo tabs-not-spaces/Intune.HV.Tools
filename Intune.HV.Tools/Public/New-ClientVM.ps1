@@ -1,65 +1,56 @@
+#requires -Modules "Hyper-V"
 function New-ClientVM {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
-        [parameter(
-            Position = 1,
-            Mandatory = $true
-        )]
+        [parameter(Position = 1, Mandatory = $true)]
         [string]$Client,
 
-        [parameter(
-            Position = 2,
-            Mandatory = $true
-        )]
+        [parameter(Position = 2, Mandatory = $true)]
         [ValidateRange(1, 999)]
         [string]$NumberOfVMs,
 
-        [parameter(
-            Position = 3,
-            Mandatory = $true
-        )]
+        [parameter(Position = 3, Mandatory = $true)]
         [ValidateRange(1, 999)]
         [string]$CPUsPerVM,
 
-        [parameter(
-            Position = 4,
-            Mandatory = $true
-        )]
+        [parameter(Position = 4, Mandatory = $true)]
         [ValidateRange(2gb, 20gb)]
-        [int64]$VMMemory
+        [int64]$VMMemory,
+
+        [parameter(Position = 5, Mandatory = $false)]
+        [switch]$SkipAutoPilot
     )
 
     #region Config
     $clientDetails = $script:hvConfig.tenantConfig | Where-Object { $_.TenantName -eq $Client }
     $imageDetails = $script:hvConfig.images | Where-Object { $_.imageName -eq $clientDetails.Win10Ver }
     $clientPath = "$($script:hvConfig.vmPath)\$($Client)"
-    $vSwitchName = $script:hvConfig.vSwitchName
-    $vLanId = $script:hvConfig.vLanId
     if (!(Test-Path $clientPath)) {
         New-Item -ItemType Directory -Force -Path $clientPath | Out-Null
     }
-    $script:logfile = "$clientPath\Build.log"
 
-    Write-LogEntry -Type Information -Message "Path to AutoPilot Reference VHDX is: $($imageDetails.refImagePath)"
-    Write-LogEntry -Type Information -Message "Client name is: $Client"
-    Write-LogEntry -Type Information -Message "Win10 ISO is located: $($imageDetails.imagePath)"
-    Write-LogEntry -Type Information -Message "Path to client VMs will be: $clientPath"
-    Write-LogEntry -Type Information -Message "Number of VMs to create: $NumberOfVMs"
-    Write-LogEntry -type Information -Message "Admin user for tenant: $Client is: $($clientDetails.adminUpn)"
+    Write-Verbose "Autopilot Reference VHDX: $($imageDetails.refImagePath)"
+    Write-Verbose "Client name: $Client"
+    Write-Verbose "Win10 ISO is located:  $($imageDetails.imagePath)"
+    Write-Verbose "Path to client VMs will be: $clientPath"
+    Write-Verbose "Number of VMs to create:  $NumberOfVMs"
+    Write-Verbose "Admin user for $Client is:  $($clientDetails.adminUpn)`n"
     #endregion
 
     #region Check for ref image - if it's not there, build it
     if (!(Test-Path -path $imageDetails.refImagePath -ErrorAction SilentlyContinue)) {
-        Write-LogEntry -Type Information -Message "Creating Reference AutoPilot VHDX"
-        new-ClientVHDX -vhdxpath $imageDetails.refImagePath -winiso $imageDetails.imagePath
-        Write-LogEntry -Type Information -Message "Reference AutoPilot VHDX has been created"
+        Write-Host "Creating reference Autopilot VHDX - this may take some time.." -ForegroundColor Yellow -NoNewline
+        New-ClientVHDX -vhdxpath $imageDetails.refImagePath -winiso $imageDetails.imagePath
+        Write-Host "Reference Autopilot VHDX has been created.." -ForegroundColor Yellow
     }
     #endregion
     #region Get Autopilot policy
-    Get-AutopilotPolicy -FileDestination "$clientPath"
+    if (!($SkipAutoPilot)) {
+        Write-Host "Grabbing Autopilot config.." -ForegroundColor Yellow
+        Get-AutopilotPolicy -FileDestination "$clientPath"
+    }
     #endregion
     #region Build the client VMs
-    $apOut = @()
     if (!(Test-Path -Path $clientPath -ErrorAction SilentlyContinue)) {
         New-Item -Path $clientPath -ItemType Directory -Force | Out-Null
     }
@@ -70,23 +61,25 @@ function New-ClientVM {
         CPUCount    = $CPUsPerVM
         VMMMemory   = $VMMemory
     }
+    if ($SkipAutoPilot) {
+        $vmParams.skipAutoPilot = $true
+    }
     if ($script:hvConfig.vLanId) {
         $vmParams.VLanId = $script:hvConfig.vLanId
     }
+    Get-VM -Name "$Client*" | Out-Null
     if ($numberOfVMs -eq 1) {
         $max = ((Get-VM -Name "$Client*").name -replace "$client`_" | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
         $vmParams.VMName = "$($Client)_$max"
-        $vm = New-ClientDevice @vmParams
-        $vm | Out-File -FilePath "$clientPath\ap$max.csv"
-        $apOut += $vm
+        Write-Host "Creating VM: $($vmParams.VMName).." -ForegroundColor Yellow
+        New-ClientDevice @vmParams
     }
     else {
         (1..$NumberOfVMs) | ForEach-Object {
             $max = ((Get-VM -Name "$Client*").name -replace "$client`_" | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum) + 1
             $vmParams.VMName = "$($Client)_$max"
-            $vm = New-ClientDevice @vmParams
-            $vm | Out-File -FilePath "$clientPath\ap$max.csv"
-            $apOut += $vm
+            Write-Host "Creating VM: $($vmParams.VMName).." -ForegroundColor Yellow
+            New-ClientDevice @vmParams
         }
     }
     #endregion

@@ -1,13 +1,12 @@
 function Add-VLanToConfig {
     [cmdletbinding()]
     param (
-        [parameter(Mandatory = $true)]
+        [parameter(Position = 1, Mandatory = $true)]
         $VSwitchName,
 
-        [parameter(Mandatory = $false)]
+        [parameter(Position = 2, Mandatory = $false)]
         $VLanId
     )
-    $script:tick = [char]0x221a
     try {
         Write-Host "Adding virtual switch details to config.. " -ForegroundColor Cyan -NoNewline
         $script:hvConfig.vSwitchName = $VSwitchName

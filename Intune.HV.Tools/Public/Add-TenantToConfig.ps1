@@ -1,14 +1,15 @@
 function Add-TenantToConfig {
     [cmdletbinding()]
     param (
-        [parameter(Mandatory = $true)]
+        [parameter(Position = 1, Mandatory = $true)]
         $TenantName,
-        [parameter(Mandatory = $true)]
+
+        [parameter(Position = 2, Mandatory = $true)]
         $Win10Ver,
-        [parameter(Mandatory = $true)]
+
+        [parameter(Position = 3, Mandatory = $true)]
         $AdminUpn
     )
-    $script:tick = [char]0x221a
     try {
         Write-Host "Adding $TenantName to config.. " -ForegroundColor Cyan -NoNewline
         $newTenant = [pscustomobject]@{
