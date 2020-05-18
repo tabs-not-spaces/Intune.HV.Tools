@@ -83,6 +83,7 @@ stages:
                         $modules = @(
                           "WindowsAutoPilotIntune"
                           "Microsoft.Graph.Intune"
+                          "Hyper-ConvertImage"
                         )
                         foreach ($m in $modules) {
                           write-host "Installing module: $m.."
