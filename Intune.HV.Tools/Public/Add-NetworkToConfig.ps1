@@ -1,4 +1,4 @@
-function Add-VLanToConfig {
+function Add-NetworkToConfig {
     [cmdletbinding()]
     param (
         [parameter(Position = 1, Mandatory = $true)]
