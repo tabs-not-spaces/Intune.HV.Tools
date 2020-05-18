@@ -1,1 +1,1 @@
-*** - Fixing module dependency for pwsh7 support
+*** - Updating cmdlet names for better use
