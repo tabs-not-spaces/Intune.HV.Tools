@@ -40,6 +40,10 @@ function New-ClientDevice {
         Set-VMNetworkAdapterVlan -Access -VMName $VMName -VlanId $VLanId
     }
     $owner = Get-HgsGuardian UntrustedGuardian
+    If (!$owner) {
+        # Creating new UntrustedGuardian since it did not exist
+        $owner = New-HgsGuardian -Name UntrustedGuardian –GenerateCertificates
+    }
     $kp = New-HgsKeyProtector -Owner $owner -AllowUntrustedRoot
     Set-VMKeyProtector -VMName $VMName -KeyProtector $kp.RawData
     Enable-VMTPM -VMName $VMName
