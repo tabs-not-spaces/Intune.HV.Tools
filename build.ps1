@@ -44,7 +44,7 @@ try {
         ModuleVersion     = $newVersion
         Description       = (Get-Content $relPath\description.txt -raw).ToString()
         FunctionsToExport = $functions
-        ReleaseNotes      = (Get-Content $relPath\releaseNotes.txt -raw).Replace('***',$newVersion).ToString()
+        ReleaseNotes      = (git log --oneline --decorate -- './Intune.HV.Tools/*.*')
     }
     Update-ModuleManifest @params
     $moduleManifest = Get-Content $relPath\$ModuleName.psd1 -raw | Invoke-Expression
@@ -58,7 +58,7 @@ try {
     $t.package.metadata.requireLicenseAcceptance = "false"
     $t.package.metadata.description = (Get-Content $relPath\description.txt -raw).ToString()
     $t.package.metadata.description
-    $t.package.metadata.releaseNotes = (Get-Content $relPath\releaseNotes.txt -raw).ToString()
+    $t.package.metadata.releaseNotes = (git log --oneline --decorate -- './Intune.HV.Tools/*.*')
     $t.package.metadata.releaseNotes
     $t.package.metadata.copyright = $moduleManifest.copyright.ToString()
     $t.package.metadata.tags = ($moduleManifest.PrivateData.PSData.Tags -join ',').ToString()
