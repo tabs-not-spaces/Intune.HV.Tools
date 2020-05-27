@@ -1,1 +1,2 @@
 *** - Improving cmdlet autocomplete
+*** - Added checks for empty variables and handled failed VHDX mount
