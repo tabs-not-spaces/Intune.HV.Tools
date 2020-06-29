@@ -7,7 +7,7 @@
 Watch this space..
 
 
-:## Pre-Reqs
+## Pre-Reqs
 
 - [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-7)
 - [WindowsAutoPilotIntune](https://www.powershellgallery.com/packages/WindowsAutoPilotIntune)
