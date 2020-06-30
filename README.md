@@ -36,7 +36,9 @@ Initialize-HVTools -Path C:\Lab
 
 If the path provided doesn't exist it will be automatically created. Please note this tool creates very large reference images - if your system drive is small, dont initialize the tools on it.
 
-The environment is a simple folder structure containing the configuration file for the tool, reference images to be used for provisioning of VMs and tenant folders containing offline Autopilot configuration files and provisioned *.vhdx images. Folder structure displayed below:
+The environment is a simple folder structure containing the configuration file for the tool, reference images to be used for provisioning of VMs and tenant folders containing offline Autopilot configuration files and provisioned *.vhdx images.
+
+Folder structure example displayed below:
 
 ```
 📦.hvtools
@@ -61,7 +63,7 @@ The environment is a simple folder structure containing the configuration file f
 Initialize-HVTools -Path C:\Lab -Reset
 ```
 
-Completely resets the configuration if you have already built out your environment.
+Completely resets the configuration if you have already built out your environment. Super destructive. You've been warned.
 
 ### Add images to the environment
 
@@ -69,13 +71,23 @@ Completely resets the configuration if you have already built out your environme
 Add-ImageToConfig -ImageName "2004" -IsoPath "C:\Path\To\Win10-2004.iso"
 ```
 
-You can add as many images to the environment as you want. If you want to build different reference images based on different editions (Pro, Ent, Edu) make the image name unique and use the same path to the image media. The name doesn't need to reflect the Build of win10, but it helps to keep things standardized.
+You can add as many images to the environment as you want.
+
+If you want to build different reference images based on different editions (Pro, Ent, Edu) make the image name unique and use the same path to the image media.
+
+The name doesn't need to reflect the Build of win10, but it helps to keep things standardized.
 
 ``` PowerShell
 Add-ImageToConfig -ImageName "2004edu" -IsoPath "C:\Path\To\Win10-2004.iso"
 Add-ImageToConfig -ImageName "2004pro" -IsoPath "C:\Path\To\Win10-2004.iso"
 Add-ImageToConfig -ImageName "2004ent" -IsoPath "C:\Path\To\Win10-2004.iso"
 ```
+
+During this process the reference image will be created. You will be asked to select an edition to build with.
+
+If you name your images based on editions you can have multiple images per installation media.
+
+![Add-ImageToConfigDemo](./img/hvtoolsDemo.gif)
 
 ### Add tenants to the environment
 
@@ -108,10 +120,10 @@ New-ClientVM -TenantName 'Powers-Hell' -OSBuild 2004 -NumberOfVMs 10 -CPUsPerVM 
 ```
 
 The example above will create 10 VMs using the reference image from the environment config named '2004' with 2 CPUs per VM and 8gb of ram.
-<code>TenantName</code> autocompletes from the list of tenants in your environment
-<code>OSBuild</code> autocompletes from the list of images in your environment
+<code>TenantName</code> autocompletes from the list of tenants in your environment.
+<code>OSBuild</code> autocompletes from the list of images in your environment.
 
-If a reference image has not been built for the OSBuild selected, it will be created at this point. You will be asked which edition you want to use for the reference image at this time.
+Reference images are now created in the "Add-ImageToConfig" stage, but if you've deleted the reference image or if the image can't be found, it will be created at this point. You will be asked which edition you want to use for the reference image.
 
 Once the reference image is created, the VM will be built using it. The Autopilot configuration json will be captured at this stage. This step will prompt the user for authentication using the AD Authentication Library from within the Microsoft.Graph.Intune module.
 
@@ -132,6 +144,16 @@ I'm providing this solution as a tool as an educational tool to assist the IT-Pr
 If you find a problem and want to contribute - please do! I love community involvement and will be as active as my schedule allows.
 
 ## Release Notes
+
+### 1.0.0.289
+
+- Feature: Build ref images from Add-ImageToConfig
+- New Build fixes ServerOS issues
+- Adds Index from wim
+- General code cleanup
+- Improved VM naming code
+- Updated required module versions
+- Updated documentation
 
 ### 1.0.0.281
 
