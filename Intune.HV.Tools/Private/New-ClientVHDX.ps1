@@ -42,7 +42,7 @@ function New-ClientVHDX {
         if ($unattend) {
             $params.UnattendPath = $unattend
         }
-        Write-Host "Building reference image..`n" -ForegroundColor Cyan
+        Write-Host "Building reference image.." -ForegroundColor Cyan -NoNewline
         Convert-WindowsImage @params
     }
     catch {
