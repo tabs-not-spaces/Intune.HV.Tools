@@ -83,4 +83,5 @@ $win10Builds = {
     }
 }
 Register-ArgumentCompleter -CommandName Add-TenantToConfig -ParameterName ImageName -ScriptBlock $win10Builds
+Register-ArgumentCompleter -CommandName New-ClientVM -ParameterName OSBuild -ScriptBlock $win10Builds
 #endregion

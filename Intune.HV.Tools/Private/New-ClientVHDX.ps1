@@ -16,24 +16,37 @@ function New-ClientVHDX {
     try {
         $module = Get-Module -ListAvailable -Name 'Hyper-ConvertImage'
         if ($module.count -lt 1) {
-            Install-Module -name 'Hyper-ConvertImage'
+            Install-Module -Name 'Hyper-ConvertImage'
             $module = Get-Module -ListAvailable -Name 'Hyper-ConvertImage'
         }
         if ($PSVersionTable.PSVersion.Major -eq 7) {
-            Import-Module -name (Split-Path $module.ModuleBase -Parent) -UseWindowsPowerShell -ErrorAction SilentlyContinue 3>$null
+            Import-Module -Name (Split-Path $module.ModuleBase -Parent) -UseWindowsPowerShell -ErrorAction SilentlyContinue 3>$null
         }
         else {
-            Import-Module -name 'Hyper-ConvertImage'
+            Import-Module -Name 'Hyper-ConvertImage'
+        }
+        $currVol = Get-Volume
+        Mount-DiskImage -ImagePath $winIso | Out-Null
+        $dl = (Get-Volume | Where-Object { $_.DriveLetter -notin $currVol.DriveLetter}).DriveLetter
+        $imageIndex = Get-ImageIndexFromWim -wimPath "$dl`:\sources\install.wim"
+        Dismount-DiskImage -ImagePath $winIso | Out-Null
+        $params = @{
+            SourcePath = $winIso
+            Edition    = $imageIndex
+            VhdType    = "Dynamic"
+            VhdFormat  = "VHDX"
+            VhdPath    = $vhdxPath
+            DiskLayout = "UEFI"
+            SizeBytes  = 127gb
         }
         if ($unattend) {
-            Convert-WindowsImage -SourcePath $winIso -Edition 3 -VhdType Dynamic -VhdFormat VHDX -VhdPath $vhdxPath -DiskLayout UEFI -SizeBytes 127gb -UnattendPath $unattend
+            $params.UnattendPath = $unattend
         }
-        else {
-            Convert-WindowsImage -SourcePath $winIso -Edition 3 -VhdType Dynamic -VhdFormat VHDX -VhdPath $vhdxPath -DiskLayout UEFI -SizeBytes 127gb
-        }
+        Write-Host "Building reference image..`n" -ForegroundColor Cyan
+        Convert-WindowsImage @params
     }
     catch {
-        Write-Warning = $_
+        Write-Warning $_
     }
     finally {
         if ($PSVersionTable.PSVersion.Major -eq 7) {

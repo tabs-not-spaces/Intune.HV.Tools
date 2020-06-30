@@ -4,8 +4,13 @@
 ![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/Intune.HV.Tools.svg?style=flat&logo=powershell&label=PSGallery%20Downloads)
 ## Summary
 
-Watch this space..
+A set of tools to assist with the creation of Intune managed virtual machines in Hyper-V.
 
+Created in collaboration with:
+
+- [AdamGrossTX](https://github.com/AdamGrossTX)
+- [brucesa85](https://github.com/brucesa85)
+- [OnPremCloudGuy](https://github.com/onpremcloudguy)
 
 ## Pre-Reqs
 
@@ -128,4 +133,39 @@ If you find a problem and want to contribute - please do! I love community invol
 
 ## Release Notes
 
-Watch this space..
+### 1.0.0.281
+
+- Adding check to create HGS Guardian if not present
+- Create folder if needed and dismount VHDX (@hkystar35)
+- Added erroraction (@hkystar35)
+- updated build script to grab release notes from git
+- formatting release notes
+- updated release notes (@hkystar35)
+- squashing an encoding bug
+
+### 1.0.0.205
+
+- Small bug fixes (@hkystar35)
+- fixing old variable reference
+- Improving cmdlet autocomplete
+- updating parameter values to be standardized
+- Updating cmdlet names for better use
+- updating cmdlet name for easier use..
+- Fixing module dependency for pwsh7 support
+- Initialize-HVTools parameter Path now required.
+- updating description and release notes
+- Ready for prime time.. (#3)
+- added serial number to notes (@brucesa85)
+- preparing for first ship
+- updated required modules
+- fixed multiple vm naming finally...
+- added support for pwsh 5 and 7
+- added ability to reset the config file
+- new config function added
+- removing expansion
+- added support for powershell 5 and 7
+- added additional argumentcompleter
+
+### 1.0.0.203
+
+- Initial commit
