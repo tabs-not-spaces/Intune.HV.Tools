@@ -33,6 +33,7 @@ If the path provided doesn't exist it will be automatically created. Please note
 
 The environment is a simple folder structure containing the configuration file for the tool, reference images to be used for provisioning of VMs and tenant folders containing offline Autopilot configuration files and provisioned *.vhdx images. Folder structure displayed below:
 
+```
 📦.hvtools
  ┣ 📂tenantVMs
  ┃ ┣ 📂MegaCorp
@@ -47,6 +48,7 @@ The environment is a simple folder structure containing the configuration file f
  ┃ ┃ ┗ 📜Powers-Hell_2.vhdx
  ┃ ┗ 📜wks2004ref.vhdx
  ┗ 📜hvconfig.json
+```
 
 ### Re-Initialize the environment
 
