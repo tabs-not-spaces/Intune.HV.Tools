@@ -26,6 +26,7 @@ stages:
                 Install-Module WindowsAutoPilotIntune -Scope CurrentUser -Force
                 Install-Module Microsoft.Graph.Intune -Scope CurrentUser -Force
                 Install-Module Hyper-ConvertImage -Scope CurrentUser -Force
+                Install-Module PSScriptAnalyzer -Scope CurrentUser -SkipPublisherCheck -ErrorAction SilentlyContinue -Force
               pwsh: true
 
           - task: PowerShell@2
