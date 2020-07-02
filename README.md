@@ -95,7 +95,9 @@ If you name your images based on editions you can have multiple images per insta
 Add-TenantToConfig -TenantName 'MegaCorp' -ImageName 2004 -AdminUpn 'intune-admin@megacorp.com'
 ```
 
-You can add as many tenants to the environment as you want. The <code>ImageName</code> parameter auto-completes to the available images from your environment. The ImageName provides the ability to set a default reference image per tenant, however this can be overwritten during creation.
+You can add as many tenants to the environment as you want. The <code>ImageName</code> parameter auto-completes to the available images from your environment. 
+
+The ImageName provides the ability to set a default reference image per tenant, however this can be overwritten during creation.
 
 ### Add virtual networking to the environment
 
