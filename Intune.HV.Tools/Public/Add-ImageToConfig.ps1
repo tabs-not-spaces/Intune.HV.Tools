@@ -3,9 +3,9 @@ function Add-ImageToConfig {
     param (
         [parameter(Position = 1, Mandatory = $true)]
         $ImageName,
-        [parameter(Mandatory = $false, ParameterSetName = 'ISO')]
+        [parameter(Mandatory = $true, ParameterSetName = 'ISO')]
         $IsoPath,
-        [Parameter(Mandatory = $false, ParameterSetName = 'RefVHDX')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'RefVHDX')]
         $ReferenceVHDX
     )
     try {
