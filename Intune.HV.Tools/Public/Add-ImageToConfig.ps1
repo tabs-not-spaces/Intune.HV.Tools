@@ -3,15 +3,20 @@ function Add-ImageToConfig {
     param (
         [parameter(Position = 1, Mandatory = $true)]
         $ImageName,
-        [parameter(Position = 2, Mandatory = $true)]
-        $IsoPath
+        [parameter(Mandatory = $true, ParameterSetName = 'ISO')]
+        $IsoPath,
+        [Parameter(Mandatory = $true, ParameterSetName = 'RefVHDX')]
+        $ReferenceVHDX
     )
     try {
         Write-Host "Adding $ImageName to config.. " -ForegroundColor Cyan -NoNewline
+        if(!$PSBoundParameters.ContainsKey('ReferenceVHDX')){
+            $ReferenceVHDX = "$($script:hvConfig.vmPath)\wks$($ImageName)ref.vhdx"
+        }
         $newTenant = [pscustomobject]@{
             imageName    = $ImageName
             imagePath    = $IsoPath
-            refImagePath = "$($script:hvConfig.vmPath)\wks$($ImageName)ref.vhdx"
+            refImagePath = $ReferenceVHDX
         }
         $script:hvConfig.images += $newTenant
         $script:hvConfig | ConvertTo-Json -Depth 20 | Out-File -FilePath $hvConfig.hvConfigPath -Encoding ascii -Force
