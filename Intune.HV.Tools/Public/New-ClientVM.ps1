@@ -34,7 +34,7 @@ function New-ClientVM {
             $imageDetails = $script:hvConfig.images | Where-Object { $_.imageName -eq $clientDetails.imageName }
         }
         $clientPath = "$($script:hvConfig.vmPath)\$($TenantName)"
-        if($imageDetails.imagePath -like '*wks$($ImageName)ref.vhdx'){
+        if($imageDetails.refimagePath -like '*wks$($ImageName)ref.vhdx'){
             if (!(Test-Path $imageDetails.imagePath -ErrorAction SilentlyContinue)) {
                 throw "Installation media not found at location: $($imageDetails.imagePath)"
             }
