@@ -67,8 +67,16 @@ Completely resets the configuration if you have already built out your environme
 
 ### Add images to the environment
 
+Add ISO Image to environment
+
 ``` PowerShell
 Add-ImageToConfig -ImageName "2004" -IsoPath "C:\Path\To\Win10-2004.iso"
+```
+
+OR Add existing VHDX to environment
+
+``` PowerShell
+Add-ImageToConfig -ImageName "2004" -ReferenceVHDX "c:\Path\To\ref10.vhdx"
 ```
 
 You can add as many images to the environment as you want.
@@ -95,7 +103,7 @@ If you name your images based on editions you can have multiple images per insta
 Add-TenantToConfig -TenantName 'MegaCorp' -ImageName 2004 -AdminUpn 'intune-admin@megacorp.com'
 ```
 
-You can add as many tenants to the environment as you want. The <code>ImageName</code> parameter auto-completes to the available images from your environment. 
+You can add as many tenants to the environment as you want. The <code>ImageName</code> parameter auto-completes to the available images from your environment.
 
 The ImageName provides the ability to set a default reference image per tenant, however this can be overwritten during creation.
 
