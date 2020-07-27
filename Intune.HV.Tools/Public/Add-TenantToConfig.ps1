@@ -18,7 +18,7 @@ function Add-TenantToConfig {
             AdminUpn   = $AdminUpn
         }
         $script:hvConfig.tenantConfig += $newTenant
-        $script:hvConfig | ConvertTo-Json -Depth 20 | Out-File -FilePath $hvConfig.hvConfigPath -Encoding ascii -Force
+        $script:hvConfig | ConvertTo-Json -Depth 20 | Out-File -FilePath $script:hvConfig.hvConfigPath -Encoding ascii -Force
     }
     catch {
         $errorMsg = $_

@@ -13,7 +13,7 @@ function Add-NetworkToConfig {
         if ($VLanId) {
             $script:hvConfig.vLanId = $VLanId
         }
-        $script:hvConfig | ConvertTo-Json -Depth 20 | Out-File -FilePath $hvConfig.hvConfigPath -Encoding ascii -Force
+        $script:hvConfig | ConvertTo-Json -Depth 20 | Out-File -FilePath $script:hvConfig.hvConfigPath -Encoding ascii -Force
     }
     catch {
         $errorMsg = $_
