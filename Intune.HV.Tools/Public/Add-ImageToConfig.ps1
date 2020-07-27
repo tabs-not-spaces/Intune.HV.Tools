@@ -19,7 +19,7 @@ function Add-ImageToConfig {
             refImagePath = $ReferenceVHDX
         }
         $script:hvConfig.images += $newTenant
-        $script:hvConfig | ConvertTo-Json -Depth 20 | Out-File -FilePath $hvConfig.hvConfigPath -Encoding ascii -Force
+        $script:hvConfig | ConvertTo-Json -Depth 20 | Out-File -FilePath $script:hvConfig.hvConfigPath -Encoding ascii -Force
         Write-Host $script:tick -ForegroundColor Green
         #region Check for ref image - if it's not there, build it
         if (!(Test-Path -Path $newTenant.refImagePath -ErrorAction SilentlyContinue)) {
