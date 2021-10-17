@@ -62,9 +62,9 @@ function New-ClientVM {
         if (!($SkipAutoPilot)) {
             Write-Host "Grabbing Autopilot config.." -ForegroundColor Yellow
             Get-AutopilotPolicy -FileDestination "$clientPath"
-        }
-        if (!(Test-Path "$clientPath\AutopilotConfigurationFile.json" -ErrorAction SilentlyContinue)) {
-            throw "Autopilot config not found.."
+            if (!(Test-Path "$clientPath\AutopilotConfigurationFile.json" -ErrorAction SilentlyContinue)) {
+                throw "Autopilot config not found.."
+            }
         }
         #endregion
         #region Build the client VMs
