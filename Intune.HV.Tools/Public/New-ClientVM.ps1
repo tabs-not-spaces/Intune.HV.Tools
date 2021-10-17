@@ -65,7 +65,6 @@ function New-ClientVM {
         }
         if (!(Test-Path "$clientPath\AutopilotConfigurationFile.json" -ErrorAction SilentlyContinue)) {
             throw "Autopilot config not found.."
-
         }
         #endregion
         #region Build the client VMs
