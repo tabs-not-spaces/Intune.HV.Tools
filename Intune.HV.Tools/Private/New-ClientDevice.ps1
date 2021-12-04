@@ -31,7 +31,7 @@ function New-ClientDevice {
     }
 
     New-VM -Name $VMName -MemoryStartupBytes $VMMMemory -VHDPath "$ClientPath\$VMName.vhdx" -Generation 2 | Out-Null
-    Enable-VMIntegrationService -vmName $VMName -Name "Guest Service Interface"
+    Get-VMIntegrationService -vmName $VMName | ? Name -match 'Interface' | Enable-VMIntegrationService
     Set-VM -name $VMName -CheckpointType Disabled
     Set-VMProcessor -VMName $VMName -Count $CPUCount
     Set-VMFirmware -VMName $VMName -EnableSecureBoot On
