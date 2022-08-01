@@ -8,6 +8,7 @@ function Get-AutopilotPolicy {
     )
     try {
         if (!(Test-Path "$FileDestination\AutopilotConfigurationFile.json" -ErrorAction SilentlyContinue)) {
+            Write-Host "Autopilot Configuration file not found.." -ForegroundColor Red
             $modules = @(
                 "WindowsAutoPilotIntune",
                 "Microsoft.Graph.Intune"
@@ -23,7 +24,8 @@ function Get-AutopilotPolicy {
                 }
             }
             #region Connect to Intune
-            Connect-MSGraph | Out-Null
+            ## Require user to confirm which tenant they want to use, in case the user uses multiple.
+            Connect-MSGraph -ForceInteractive  | Out-Null
             #endregion Connect to Intune
             #region Get policies
             $apPolicies = Get-AutopilotProfile
