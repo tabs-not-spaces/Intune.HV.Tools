@@ -1,5 +1,5 @@
-#requires -Modules @{ ModuleName="WindowsAutoPilotIntune"; ModuleVersion="4.3" }
-#requires -Modules @{ ModuleName="Microsoft.Graph.Intune"; ModuleVersion="6.1907.1.0"}
+#requires -Modules @{ ModuleName="WindowsAutoPilotIntune"; ModuleVersion="5.6" }
+#requires -Modules @{ ModuleName="Microsoft.Graph.Identity.DirectoryManagement"; ModuleVersion="2.22.0"}
 function Get-AutopilotPolicy {
     [cmdletbinding()]
     param (
@@ -10,7 +10,7 @@ function Get-AutopilotPolicy {
         if (!(Test-Path "$FileDestination\AutopilotConfigurationFile.json" -ErrorAction SilentlyContinue)) {
             $modules = @(
                 "WindowsAutoPilotIntune",
-                "Microsoft.Graph.Intune"
+                "Microsoft.Graph.Identity.DirectoryManagement"
             )
             if ($PSVersionTable.PSVersion.Major -eq 7) {
                 $modules | ForEach-Object {
@@ -22,16 +22,16 @@ function Get-AutopilotPolicy {
                     Import-Module $_
                 }
             }
-            #region Connect to Intune
-            Connect-MSGraph | Out-Null
-            #endregion Connect to Intune
+            #region Connect to Microsoft Graph
+            Connect-MgGraph -Scopes "DeviceManagementServiceConfig.Read.All,Organization.Read.All" -NoWelcome
+            #endregion Connect to Microsoft Graph
             #region Get policies
             $apPolicies = Get-AutopilotProfile
             if (!($apPolicies)) {
                 Write-Warning "No Autopilot policies found.."
             }
             else {
-                if ($apPolicies.count -gt 1) {
+                if ($apPolicies.id.count -gt 1) {
                     Write-Host "Multiple Autopilot policies found - select the correct one.." -ForegroundColor Cyan
                     $selectedAp = $apPolicies | Select-Object displayName | Out-GridView -passthru
                     $apPol = $apPolicies | Where-Object {$_.displayName -eq $selectedAp.displayName}
@@ -42,6 +42,7 @@ function Get-AutopilotPolicy {
                 }
                 $apPol | ConvertTo-AutopilotConfigurationJSON | Out-File "$FileDestination\AutopilotConfigurationFile.json" -Encoding ascii -Force
                 Write-Host "Autopilot profile selected: $($apPol.displayName)" -ForegroundColor Green
+                Disconnect-MgGraph | Out-Null
             }
             #endregion Get policies
         }
@@ -56,7 +57,7 @@ function Get-AutopilotPolicy {
         if ($PSVersionTable.PSVersion.Major -eq 7) {
             $modules = @(
                 "WindowsAutoPilotIntune",
-                "Microsoft.Graph.Intune"
+                "Microsoft.Graph.Identity.DirectoryManagement"
             ) | ForEach-Object {
                 Remove-Module $_ -ErrorAction SilentlyContinue 3>$null
             }
